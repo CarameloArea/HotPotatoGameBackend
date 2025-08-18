@@ -12,4 +12,8 @@ import java.util.Optional;
 
 @Repository
 public interface PlayerRepository extends  JpaRepository<PlayerEntity, Integer> {
+
+    boolean existsByEmail(String email);
+
+    boolean existsByNickname(String nickname);
 }

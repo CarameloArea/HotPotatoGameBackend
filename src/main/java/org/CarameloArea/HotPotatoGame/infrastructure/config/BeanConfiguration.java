@@ -1,5 +1,7 @@
 package org.CarameloArea.HotPotatoGame.infrastructure.config;
 
+import org.CarameloArea.HotPotatoGame.application.port.driven.CheckPlayerByEmail;
+import org.CarameloArea.HotPotatoGame.application.port.driven.CheckPlayerByNickname;
 import org.CarameloArea.HotPotatoGame.application.port.driven.FindPlayer;
 import org.CarameloArea.HotPotatoGame.application.port.driven.SavePlayer;
 import org.CarameloArea.HotPotatoGame.application.port.driver.CreatePlayerUseCase;
@@ -21,12 +23,22 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public CreatePlayerUseCase createPlayerUseCase(final SavePlayer savePlayer) {
-        return new CreatePlayerUseCaseImpl(savePlayer);
+    public CreatePlayerUseCase createPlayerUseCase(final SavePlayer savePlayer, final CheckPlayerByEmail checkPlayerByEmail, final CheckPlayerByNickname checkPlayerByNickname) {
+        return new CreatePlayerUseCaseImpl(savePlayer, checkPlayerByEmail, checkPlayerByNickname);
     }
 
     @Bean
     public FindPlayerUseCase findPlayerUseCase(final FindPlayer findPlayerPort) {
         return new FindPlayerUseCaseImpl(findPlayerPort);
+    }
+
+    @Bean
+    public CheckPlayerByEmail checkPlayerByEmail(PlayerAdapter playerAdapter) {
+        return playerAdapter::existsByEmail;
+    }
+
+    @Bean
+    public CheckPlayerByNickname checkPlayerByNickname(PlayerAdapter playerAdapter) {
+        return playerAdapter::existsByNickname;
     }
 }

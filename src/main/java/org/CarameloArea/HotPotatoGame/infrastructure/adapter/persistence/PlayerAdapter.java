@@ -1,6 +1,8 @@
 package org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence;
 
 import lombok.RequiredArgsConstructor;
+import org.CarameloArea.HotPotatoGame.application.port.driven.CheckPlayerByEmail;
+import org.CarameloArea.HotPotatoGame.application.port.driven.CheckPlayerByNickname;
 import org.CarameloArea.HotPotatoGame.application.port.driven.FindPlayer;
 import org.CarameloArea.HotPotatoGame.application.port.driven.SavePlayer;
 import org.CarameloArea.HotPotatoGame.domain.exception.EntityNotFoundException;
@@ -30,5 +32,13 @@ public class PlayerAdapter implements SavePlayer, FindPlayer {
         PlayerEntity playerEntity = this.playerPersistenceMapper.toEntity(player);
         playerEntity = this.playerRepository.save(playerEntity);
         return this.playerPersistenceMapper.toDomain(playerEntity);
+    }
+
+    public boolean existsByEmail(String email) {
+        return this.playerRepository.existsByEmail(email);
+    }
+
+    public boolean existsByNickname(String nickname) {
+        return this.playerRepository.existsByNickname(nickname);
     }
 }

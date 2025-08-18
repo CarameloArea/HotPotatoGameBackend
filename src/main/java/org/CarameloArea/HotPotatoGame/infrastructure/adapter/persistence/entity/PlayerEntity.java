@@ -32,7 +32,7 @@ public class PlayerEntity implements Serializable {
     @Getter
     @NotNull
     @Size(max = 100)
-    @Column(name = "nickname", length = 100, nullable = false)
+    @Column(name = "nickname", length = 100, unique = true)
     private String nickname;
 
     @Setter
@@ -40,7 +40,7 @@ public class PlayerEntity implements Serializable {
     @NotNull
     @Size(max = 150)
     @Email
-    @Column(name = "email", length = 150, nullable = false)
+    @Column(name = "email", length = 150, nullable = false, unique = true)
     private String email;
 
     @Setter
