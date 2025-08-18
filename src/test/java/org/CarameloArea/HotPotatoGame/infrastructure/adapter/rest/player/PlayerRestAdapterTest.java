@@ -20,6 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
@@ -73,17 +74,14 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("It should be able to return player")
     void testFindById() throws Exception {
-        Player playerCreated = new Player(1, "Generic PLayer", "generic.player@example.com", "12345678", null);
+        PlayerEntity playerCreated = this.testFixtureUtil.criarPlayerEntity();
 
-        when(createPlayerUseCase.execute(any(Player.class))).thenReturn(playerCreated);
-
-        mockMvc.perform(post(BASE_URL)
+        mockMvc.perform(get(BASE_URL.concat("/" + playerCreated.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(playerCreated)))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", BASE_URL.concat("/1")))
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.nickname", is("Generic PLayer")));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(playerCreated.getId())))
+                .andExpect(jsonPath("$.nickname", is(playerCreated.getNickname())));
     }
 
 }
