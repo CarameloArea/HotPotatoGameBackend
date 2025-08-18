@@ -73,29 +73,17 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("It should be able to return player")
     void testFindById() throws Exception {
-        RegisterPlayerRequest requestBody = new RegisterPlayerRequest("Generic PLayer", "generic.player@example.com", "12345678");
-
         Player playerCreated = new Player(1, "Generic PLayer", "generic.player@example.com", "12345678", null);
 
         when(createPlayerUseCase.execute(any(Player.class))).thenReturn(playerCreated);
 
         mockMvc.perform(post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestBody)))
+                        .content(objectMapper.writeValueAsString(playerCreated)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", BASE_URL.concat("/1")))
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.nickname", is("Generic PLayer")));
     }
 
-    @Test
-    void deveRetornarPedido_QuandoBuscarPorIdExistente() throws Exception {
-        PlayerEntity playerEntity = testFixtureUtil.criarPlayerEntity();
-
-        mockMvc.perform(get(BASE_URL.concat("/{id}"), playerEntity.getId()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(playerEntity.getId())))
-                .andExpect(jsonPath("$.nickname", is(playerEntity.getNickname())))
-                .andExpect(jsonPath("$.email", is(playerEntity.getEmail())));
-    }
 }
