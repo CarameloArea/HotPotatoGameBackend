@@ -125,4 +125,16 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath(JSON_PATH_NICKNAME, is(playerCreated.getNickname())));
     }
 
+    @Test
+    @DisplayName("It should make sure to return 404 when the player does not exist")
+    void testReturnNotFoundErrorWhenFindByIdWithNonExistentPlayer() throws Exception {
+        PlayerEntity playerCreated = this.testFixtureUtil.createPlayerEntity();
+
+        mockMvc.perform(get(BASE_URL.concat("/123".concat(playerCreated.getId().toString())))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(playerCreated)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath(JSON_PATH_TITLE_ERROR, is("Player not found.")));
+    }
+
 }
