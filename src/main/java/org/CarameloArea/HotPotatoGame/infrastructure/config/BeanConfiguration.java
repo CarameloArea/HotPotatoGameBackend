@@ -1,13 +1,12 @@
 package org.CarameloArea.HotPotatoGame.infrastructure.config;
 
-import org.CarameloArea.HotPotatoGame.application.port.driven.CheckPlayerByEmail;
-import org.CarameloArea.HotPotatoGame.application.port.driven.CheckPlayerByNickname;
-import org.CarameloArea.HotPotatoGame.application.port.driven.FindPlayer;
-import org.CarameloArea.HotPotatoGame.application.port.driven.SavePlayer;
+import org.CarameloArea.HotPotatoGame.application.port.driven.*;
 import org.CarameloArea.HotPotatoGame.application.port.driver.CreatePlayerUseCase;
 import org.CarameloArea.HotPotatoGame.application.port.driver.FindPlayerUseCase;
+import org.CarameloArea.HotPotatoGame.application.port.driver.UpdatePlayerUseCase;
 import org.CarameloArea.HotPotatoGame.application.usecase.CreatePlayerUseCaseImpl;
 import org.CarameloArea.HotPotatoGame.application.usecase.FindPlayerUseCaseImpl;
+import org.CarameloArea.HotPotatoGame.application.usecase.UpdatePlayerUseCaseImpl;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.PlayerAdapter;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.mapper.PlayerPersistenceMapper;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.repository.PlayerRepository;
@@ -28,8 +27,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public FindPlayerUseCase findPlayerUseCase(final FindPlayer findPlayerPort) {
-        return new FindPlayerUseCaseImpl(findPlayerPort);
+    public FindPlayerUseCase findPlayerUseCase(final FindPlayer findPlayer) {
+        return new FindPlayerUseCaseImpl(findPlayer);
+    }
+
+    @Bean
+    public UpdatePlayerUseCase updatePlayerUseCase(final UpdatePlayer updatePlayer, final FindPlayer findPlayer) {
+        return new UpdatePlayerUseCaseImpl(updatePlayer, findPlayer);
     }
 
     @Bean
@@ -40,5 +44,10 @@ public class BeanConfiguration {
     @Bean
     public CheckPlayerByNickname checkPlayerByNickname(PlayerAdapter playerAdapter) {
         return playerAdapter::existsByNickname;
+    }
+
+    @Bean
+    public CheckPlayerById checkPlayerById(PlayerAdapter playerAdapter) {
+        return playerAdapter::existsById;
     }
 }

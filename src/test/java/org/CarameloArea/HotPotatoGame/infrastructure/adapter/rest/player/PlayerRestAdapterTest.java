@@ -3,11 +3,14 @@ package org.CarameloArea.HotPotatoGame.infrastructure.adapter.rest.player;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.CarameloArea.HotPotatoGame.AbstractIntegrationTest;
 import org.CarameloArea.HotPotatoGame.application.port.driver.CreatePlayerUseCase;
+import org.CarameloArea.HotPotatoGame.application.port.driver.UpdatePlayerUseCase;
 import org.CarameloArea.HotPotatoGame.domain.exception.EmailAlreadyUsedException;
+import org.CarameloArea.HotPotatoGame.domain.exception.EntityNotFoundException;
 import org.CarameloArea.HotPotatoGame.domain.exception.NicknameAlreadyUsedException;
 import org.CarameloArea.HotPotatoGame.domain.model.Player;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.entity.PlayerEntity;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.rest.player.dto.RegisterPlayerRequest;
+import org.CarameloArea.HotPotatoGame.infrastructure.adapter.rest.player.dto.UpdatePlayerRequest;
 import org.CarameloArea.HotPotatoGame.util.TestFixtureUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,8 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
@@ -36,6 +38,9 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
     @MockBean
     private CreatePlayerUseCase createPlayerUseCase;
 
+    @MockBean
+    private UpdatePlayerUseCase updatePlayerUseCase;
+
     @Autowired
     private TestFixtureUtil testFixtureUtil;
 
@@ -44,6 +49,7 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
     private static final String JSON_PATH_NICKNAME = "$.nickname";
     private static final String JSON_PATH_FIRST_FIELD_ERROR = "$.fieldErrors.[0].message";
     private static final String JSON_PATH_TITLE_ERROR = "$.title";
+    private static final String ENTITY_NAME = "Player";
 
     @Test
     @DisplayName("It should be able to register a new player in the system")
@@ -131,10 +137,58 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
         PlayerEntity playerCreated = this.testFixtureUtil.createPlayerEntity();
 
         mockMvc.perform(get(BASE_URL.concat("/123".concat(playerCreated.getId().toString())))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(playerCreated)))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath(JSON_PATH_TITLE_ERROR, is("Player not found.")));
+    }
+
+    @Test
+    @DisplayName("It should be able to update a player")
+    void testUpdate() throws Exception {
+        PlayerEntity playerCreated = this.testFixtureUtil.createPlayerEntity();
+        UpdatePlayerRequest updatePlayerRequest = new UpdatePlayerRequest("new PLayer", "newPass123", "RED");
+
+        Player playerUpdated = Player.builder()
+                .id(playerCreated.getId())
+                .nickname(updatePlayerRequest.nickname())
+                .password(updatePlayerRequest.password())
+                .email(playerCreated.getEmail())
+                .icon(updatePlayerRequest.icon())
+                .build();
+
+        when(updatePlayerUseCase.execute(any(Integer.class), any(Player.class))).thenReturn(playerUpdated);
+
+        mockMvc.perform(put(BASE_URL.concat("/".concat(playerCreated.getId().toString())))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatePlayerRequest)))
+                .andExpect(status().isOk());
+
+        verify(updatePlayerUseCase, times(1)).execute(any(Integer.class), any(Player.class));
+    }
+
+    @Test
+    @DisplayName("It should make sure to return 404 when the player does not exist on update")
+    void testReturnNotFoundErrorWhenUpdateWithNonExistentPlayer() throws Exception {
+        PlayerEntity playerCreated = this.testFixtureUtil.createPlayerEntity();
+        UpdatePlayerRequest updatePlayerRequest = new UpdatePlayerRequest("new PLayer", "newPass123", "RED");
+
+        Player playerUpdated = Player.builder()
+                .id(playerCreated.getId())
+                .nickname(updatePlayerRequest.nickname())
+                .password(updatePlayerRequest.password())
+                .email(playerCreated.getEmail())
+                .icon(updatePlayerRequest.icon())
+                .build();
+
+        when(updatePlayerUseCase.execute(any(Integer.class), any(Player.class))).thenThrow(new EntityNotFoundException(ENTITY_NAME));
+
+        mockMvc.perform(put(BASE_URL.concat("/123".concat(playerCreated.getId().toString())))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatePlayerRequest)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath(JSON_PATH_TITLE_ERROR, is("Player not found.")));
+
+        verify(updatePlayerUseCase, times(1)).execute(any(Integer.class), any(Player.class));
     }
 
 }

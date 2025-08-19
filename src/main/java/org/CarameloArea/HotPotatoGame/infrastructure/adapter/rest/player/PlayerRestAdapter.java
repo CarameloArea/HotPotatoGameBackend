@@ -6,12 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.CarameloArea.HotPotatoGame.application.port.driver.CreatePlayerUseCase;
 import org.CarameloArea.HotPotatoGame.application.port.driver.FindPlayerUseCase;
+import org.CarameloArea.HotPotatoGame.application.port.driver.UpdatePlayerUseCase;
 import org.CarameloArea.HotPotatoGame.domain.model.Player;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.HeaderUtil;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.entity.PlayerEntity;
-import org.CarameloArea.HotPotatoGame.infrastructure.adapter.rest.player.dto.DetailsPlayerResponse;
-import org.CarameloArea.HotPotatoGame.infrastructure.adapter.rest.player.dto.RegisterPlayerRequest;
-import org.CarameloArea.HotPotatoGame.infrastructure.adapter.rest.player.dto.RegisterPlayerResponse;
+import org.CarameloArea.HotPotatoGame.infrastructure.adapter.rest.player.dto.*;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.rest.player.mapper.PlayerRestMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +27,7 @@ public class PlayerRestAdapter {
 
     private final FindPlayerUseCase findPlayerUseCase;
     private final CreatePlayerUseCase createPlayerUseCase;
+    private final UpdatePlayerUseCase updatePlayerUseCase;
     private final PlayerRestMapper playerRestMapper;
 
     @Value("${app.name}")
@@ -55,6 +55,21 @@ public class PlayerRestAdapter {
         return ResponseEntity
                 .created(new URI("/api/v1/players/" + response.id()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, response.id().toString()))
+                .body(response);
+    }
+
+    @PutMapping(value = "/{id}")
+    @Operation(summary = "Update a player")
+    public ResponseEntity<UpdatePlayerResponse> updatePlayer(@PathVariable @Valid final Integer id,
+                                                             @RequestBody @Valid final UpdatePlayerRequest updatePlayerRequest) throws URISyntaxException {
+        log.debug("REST request to update Player : {}", updatePlayerRequest);
+        Player player = this.playerRestMapper.toPlayer(updatePlayerRequest);
+        player = this.updatePlayerUseCase.execute(id, player);
+
+        UpdatePlayerResponse response = this.playerRestMapper.toUpdatePlayerResponse(player);
+
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, response.id().toString()))
                 .body(response);
     }
 }
