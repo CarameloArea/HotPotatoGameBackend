@@ -1,6 +1,8 @@
 package org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.CarameloArea.HotPotatoGame.application.port.driven.DeletePlayer;
 import org.CarameloArea.HotPotatoGame.application.port.driven.FindPlayer;
 import org.CarameloArea.HotPotatoGame.application.port.driven.SavePlayer;
 import org.CarameloArea.HotPotatoGame.application.port.driven.UpdatePlayer;
@@ -11,7 +13,7 @@ import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.mapper.
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.repository.PlayerRepository;
 
 @RequiredArgsConstructor
-public class PlayerAdapter implements SavePlayer, FindPlayer, UpdatePlayer {
+public class PlayerAdapter implements SavePlayer, FindPlayer, UpdatePlayer, DeletePlayer {
 
     private final PlayerRepository playerRepository;
     private final PlayerPersistenceMapper playerPersistenceMapper;
@@ -19,21 +21,23 @@ public class PlayerAdapter implements SavePlayer, FindPlayer, UpdatePlayer {
     public static final String ENTITY_NAME = "Player";
 
     @Override
-    public Player execute(Integer id) {
+    public Player findById(Integer id) {
         PlayerEntity playerEntity = this.playerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(ENTITY_NAME));
         ;
         return this.playerPersistenceMapper.toDomain(playerEntity);
     }
 
     @Override
-    public Player execute(Player player) {
+    @Transactional
+    public Player save(Player player) {
         PlayerEntity playerEntity = this.playerPersistenceMapper.toEntity(player);
         playerEntity = this.playerRepository.save(playerEntity);
         return this.playerPersistenceMapper.toDomain(playerEntity);
     }
 
     @Override
-    public Player execute(Integer id, Player player) {
+    @Transactional
+    public Player update(Integer id, Player player) {
         PlayerEntity playerToUpdate = this.playerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_NAME));
 
@@ -41,6 +45,14 @@ public class PlayerAdapter implements SavePlayer, FindPlayer, UpdatePlayer {
         PlayerEntity updatedEntity = this.playerRepository.save(playerToUpdate);
 
         return this.playerPersistenceMapper.toDomain(updatedEntity);
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Integer id) {
+        PlayerEntity playerEntity = this.playerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(ENTITY_NAME));
+
+        this.playerRepository.delete(playerEntity);
     }
 
     public boolean existsByEmail(String email) {

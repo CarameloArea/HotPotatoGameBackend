@@ -4,5 +4,5 @@ import org.CarameloArea.HotPotatoGame.domain.model.Player;
 
 public interface UpdatePlayer {
 
-    Player execute(Integer id, Player player);
+    Player update(Integer id, Player player);
 }

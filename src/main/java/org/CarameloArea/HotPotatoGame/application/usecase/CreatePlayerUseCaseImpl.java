@@ -26,6 +26,6 @@ public class CreatePlayerUseCaseImpl implements CreatePlayerUseCase {
             throw new NicknameAlreadyUsedException();
         }
 
-        return savePlayer.execute(player);
+        return savePlayer.save(player);
     }
 }

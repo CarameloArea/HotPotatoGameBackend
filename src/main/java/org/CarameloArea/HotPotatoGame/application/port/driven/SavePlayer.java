@@ -4,5 +4,5 @@ import org.CarameloArea.HotPotatoGame.domain.model.Player;
 
 public interface SavePlayer {
 
-    Player execute(Player player);
+    Player save(Player player);
 }

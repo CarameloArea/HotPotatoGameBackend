@@ -4,5 +4,5 @@ import org.CarameloArea.HotPotatoGame.domain.model.Player;
 
 public interface FindPlayer {
 
-    Player execute(Integer id);
+    Player findById(Integer id);
 }

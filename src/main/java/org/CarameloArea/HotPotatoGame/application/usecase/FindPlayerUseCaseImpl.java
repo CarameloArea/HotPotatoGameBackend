@@ -12,7 +12,7 @@ public class FindPlayerUseCaseImpl implements FindPlayerUseCase {
 
     @Override
     public Player execute(Integer id) {
-        return findPlayer.execute(id);
+        return findPlayer.findById(id);
     }
 
 }

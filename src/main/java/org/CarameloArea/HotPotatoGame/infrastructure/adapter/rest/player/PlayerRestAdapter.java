@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.CarameloArea.HotPotatoGame.application.port.driver.CreatePlayerUseCase;
+import org.CarameloArea.HotPotatoGame.application.port.driver.DeletePlayerUseCase;
 import org.CarameloArea.HotPotatoGame.application.port.driver.FindPlayerUseCase;
 import org.CarameloArea.HotPotatoGame.application.port.driver.UpdatePlayerUseCase;
 import org.CarameloArea.HotPotatoGame.domain.model.Player;
@@ -28,6 +29,7 @@ public class PlayerRestAdapter {
     private final FindPlayerUseCase findPlayerUseCase;
     private final CreatePlayerUseCase createPlayerUseCase;
     private final UpdatePlayerUseCase updatePlayerUseCase;
+    private final DeletePlayerUseCase deletePlayerUseCase;
     private final PlayerRestMapper playerRestMapper;
 
     @Value("${app.name}")
@@ -71,5 +73,14 @@ public class PlayerRestAdapter {
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, response.id().toString()))
                 .body(response);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    @Operation(summary = "Delete a player")
+    public ResponseEntity<Object> deletePlayer(@PathVariable @Valid final Integer id) throws URISyntaxException {
+        this.deletePlayerUseCase.execute(id);
+
+        return ResponseEntity.noContent()
+                .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, String.valueOf(id))).build();
     }
 }

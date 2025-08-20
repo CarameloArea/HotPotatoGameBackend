@@ -2,9 +2,11 @@ package org.CarameloArea.HotPotatoGame.infrastructure.config;
 
 import org.CarameloArea.HotPotatoGame.application.port.driven.*;
 import org.CarameloArea.HotPotatoGame.application.port.driver.CreatePlayerUseCase;
+import org.CarameloArea.HotPotatoGame.application.port.driver.DeletePlayerUseCase;
 import org.CarameloArea.HotPotatoGame.application.port.driver.FindPlayerUseCase;
 import org.CarameloArea.HotPotatoGame.application.port.driver.UpdatePlayerUseCase;
 import org.CarameloArea.HotPotatoGame.application.usecase.CreatePlayerUseCaseImpl;
+import org.CarameloArea.HotPotatoGame.application.usecase.DeletePlayerUseCaseImpl;
 import org.CarameloArea.HotPotatoGame.application.usecase.FindPlayerUseCaseImpl;
 import org.CarameloArea.HotPotatoGame.application.usecase.UpdatePlayerUseCaseImpl;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.PlayerAdapter;
@@ -32,8 +34,13 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public UpdatePlayerUseCase updatePlayerUseCase(final UpdatePlayer updatePlayer, final FindPlayer findPlayer) {
-        return new UpdatePlayerUseCaseImpl(updatePlayer, findPlayer);
+    public UpdatePlayerUseCase updatePlayerUseCase(final UpdatePlayer updatePlayer) {
+        return new UpdatePlayerUseCaseImpl(updatePlayer);
+    }
+
+    @Bean
+    public DeletePlayerUseCase deletePlayerUseCase(final DeletePlayer deletePlayer) {
+        return new DeletePlayerUseCaseImpl(deletePlayer);
     }
 
     @Bean
