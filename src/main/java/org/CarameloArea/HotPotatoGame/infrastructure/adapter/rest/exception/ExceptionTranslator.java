@@ -1,6 +1,9 @@
 package org.CarameloArea.HotPotatoGame.infrastructure.adapter.rest.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.CarameloArea.HotPotatoGame.domain.exception.EmailAlreadyUsedException;
+import org.CarameloArea.HotPotatoGame.domain.exception.NicknameAlreadyUsedException;
+import org.CarameloArea.HotPotatoGame.infrastructure.adapter.HeaderUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -80,6 +83,32 @@ public class ExceptionTranslator implements ProblemHandling {
             }
         }
         return new ResponseEntity<>(builder.build(), entity.getHeaders(), entity.getStatusCode());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleEmailAlreadyUsedException(
+            EmailAlreadyUsedException ex,
+            NativeWebRequest request
+    ) {
+        EmailAlreadyUsedException problem = new EmailAlreadyUsedException();
+        return create(
+                problem,
+                request,
+                HeaderUtil.createFailureAlert(applicationName, true, problem.getEntityName(), problem.getErrorKey(), problem.getMessage())
+        );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleNicknameAlreadyUsedException(
+            NicknameAlreadyUsedException ex,
+            NativeWebRequest request
+    ) {
+        NicknameAlreadyUsedException problem = new NicknameAlreadyUsedException();
+        return create(
+                problem,
+                request,
+                HeaderUtil.createFailureAlert(applicationName, true, problem.getEntityName(), problem.getErrorKey(), problem.getMessage())
+        );
     }
 
     @Override
