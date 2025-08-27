@@ -18,4 +18,6 @@ public interface PlayerRestMapper {
     UpdatePlayerResponse toUpdatePlayerResponse(Player player);
 
     DetailsPlayerResponse toDetailsPlayerResponse(Player player);
+
+    Player toPlayer(LoginRequest loginRequest);
 }

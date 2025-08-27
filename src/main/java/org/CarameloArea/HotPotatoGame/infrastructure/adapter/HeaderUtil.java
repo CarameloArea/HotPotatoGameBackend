@@ -14,13 +14,14 @@ public final class HeaderUtil {
     private HeaderUtil() {
     }
 
-    public static HttpHeaders createAlert(String applicationName, String message, String param) {
+    private static HttpHeaders createAlert(String applicationName, String message, String param) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-" + applicationName + "-alert", message);
 
         try {
             headers.add("X-" + applicationName + "-params", URLEncoder.encode(param, StandardCharsets.UTF_8.toString()));
         } catch (UnsupportedEncodingException var5) {
+            log.error("Error encoding header param", var5);
         }
 
         return headers;
@@ -38,6 +39,11 @@ public final class HeaderUtil {
 
     public static HttpHeaders createEntityDeletionAlert(String applicationName, boolean enableTranslation, String entityName, String param) {
         String message = enableTranslation ? applicationName + "." + entityName + ".deleted" : "A " + entityName + " is deleted with identifier " + param;
+        return createAlert(applicationName, message, param);
+    }
+
+    public static HttpHeaders createLoginSuccessAlert(String applicationName, String param) {
+        String message = applicationName + ".user.loggedin";
         return createAlert(applicationName, message, param);
     }
 

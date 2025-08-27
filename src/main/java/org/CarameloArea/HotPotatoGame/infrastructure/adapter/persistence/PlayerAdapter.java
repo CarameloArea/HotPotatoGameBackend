@@ -2,29 +2,37 @@ package org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.CarameloArea.HotPotatoGame.application.port.driven.DeletePlayer;
-import org.CarameloArea.HotPotatoGame.application.port.driven.FindPlayer;
-import org.CarameloArea.HotPotatoGame.application.port.driven.SavePlayer;
-import org.CarameloArea.HotPotatoGame.application.port.driven.UpdatePlayer;
+import org.CarameloArea.HotPotatoGame.application.port.driven.*;
 import org.CarameloArea.HotPotatoGame.domain.exception.EntityNotFoundException;
 import org.CarameloArea.HotPotatoGame.domain.model.Player;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.entity.PlayerEntity;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.mapper.PlayerPersistenceMapper;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.repository.PlayerRepository;
 
+import java.util.Optional;
+
+import static org.CarameloArea.HotPotatoGame.util.EntityUtils.getBaseNameFromEntity;
+
 @RequiredArgsConstructor
-public class PlayerAdapter implements SavePlayer, FindPlayer, UpdatePlayer, DeletePlayer {
+public class PlayerAdapter implements SavePlayer, FindPlayerById, UpdatePlayer, DeletePlayer, FindPlayerByEmail {
 
     private final PlayerRepository playerRepository;
+
     private final PlayerPersistenceMapper playerPersistenceMapper;
 
-    public static final String ENTITY_NAME = "Player";
+    public static final String ENTITY_NAME = getBaseNameFromEntity(PlayerEntity.class.getName());
 
     @Override
     public Player findById(Integer id) {
         PlayerEntity playerEntity = this.playerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(ENTITY_NAME));
         ;
         return this.playerPersistenceMapper.toDomain(playerEntity);
+    }
+
+    @Override
+    public Optional<Player> findByEmail(String email) {
+        return this.playerRepository.findByEmail(email)
+                .map(this.playerPersistenceMapper::toDomain);
     }
 
     @Override

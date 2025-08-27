@@ -6,6 +6,10 @@ spring:
     active: ${PROFILE:DEV}
   application:
     name: hot_potato_game
+    security:
+      jwt:
+        secret-key: ${APPLICATION_SECURITY_JWT_SECRETKEY:SECRET_JWT}
+        expiration: ${APPLICATION_SECURITY_JWT_EXPIRATION:86400000}
   config:
     import: optional:file:.env-dev[.properties]
   datasource:

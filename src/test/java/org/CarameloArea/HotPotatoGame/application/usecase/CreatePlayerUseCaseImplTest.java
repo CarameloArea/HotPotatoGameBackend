@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,6 +31,9 @@ class CreatePlayerUseCaseImplTest {
 
     @Mock
     private CheckPlayerByNickname checkPlayerByNickname;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private CreatePlayerUseCaseImpl createPlayerUseCase;
@@ -58,6 +62,7 @@ class CreatePlayerUseCaseImplTest {
     void testCreate() {
         when(this.checkPlayerByEmail.execute(playerToCreate.getEmail())).thenReturn(false);
         when(this.checkPlayerByNickname.execute(playerToCreate.getNickname())).thenReturn(false);
+        when(this.passwordEncoder.encode(playerToCreate.getPassword())).thenReturn("Pass12345");
         when(this.savePlayer.save(playerToCreate)).thenReturn(expectedPlayerSaved);
 
         Player playerSaved = this.createPlayerUseCase.execute(playerToCreate);
@@ -68,6 +73,7 @@ class CreatePlayerUseCaseImplTest {
 
         verify(this.checkPlayerByEmail, times(1)).execute(playerToCreate.getEmail());
         verify(this.checkPlayerByNickname, times(1)).execute(playerToCreate.getNickname());
+        verify(this.passwordEncoder, times(1)).encode(playerToCreate.getPassword());
         verify(this.savePlayer, times(1)).save(any(Player.class));
     }
 
@@ -94,6 +100,7 @@ class CreatePlayerUseCaseImplTest {
             createPlayerUseCase.execute(playerToCreate);
         });
 
+        verify(this.passwordEncoder, never()).encode(playerToCreate.getPassword());
         verify(savePlayer, never()).save(any(Player.class));
     }
 

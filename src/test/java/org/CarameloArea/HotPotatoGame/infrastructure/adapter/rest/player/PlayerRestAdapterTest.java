@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
@@ -123,6 +124,7 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("It should be able to return player")
     void testFindById() throws Exception {
         PlayerEntity playerCreated = this.testFixtureUtil.createPlayerEntity();
@@ -136,6 +138,7 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("It should make sure to return 404 when the player does not exist")
     void testReturnNotFoundErrorWhenFindByIdWithNonExistentPlayer() throws Exception {
         PlayerEntity playerCreated = this.testFixtureUtil.createPlayerEntity();
@@ -147,6 +150,7 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("It should be able to update a player")
     void testUpdate() throws Exception {
         PlayerEntity playerCreated = this.testFixtureUtil.createPlayerEntity();
@@ -171,6 +175,7 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("It should make sure to return 404 when the player does not exist on update")
     void testReturnNotFoundErrorWhenUpdateWithNonExistentPlayer() throws Exception {
         PlayerEntity playerCreated = this.testFixtureUtil.createPlayerEntity();
@@ -196,6 +201,7 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("It should be able to delete a player")
     void testDelete() throws Exception {
         PlayerEntity playerCreated = this.testFixtureUtil.createPlayerEntity();
@@ -210,6 +216,7 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("It should make sure to return 404 when the player does not exist on delete")
     void testReturnNotFoundErrorWhenDeleteWithNonExistentPlayer() throws Exception {
         PlayerEntity playerCreated = this.testFixtureUtil.createPlayerEntity();
@@ -223,5 +230,4 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
 
         verify(deletePlayerUseCase, times(1)).execute(any(Integer.class));
     }
-
 }

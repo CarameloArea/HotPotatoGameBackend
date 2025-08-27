@@ -8,6 +8,7 @@ import org.CarameloArea.HotPotatoGame.application.port.driver.CreatePlayerUseCas
 import org.CarameloArea.HotPotatoGame.domain.exception.EmailAlreadyUsedException;
 import org.CarameloArea.HotPotatoGame.domain.exception.NicknameAlreadyUsedException;
 import org.CarameloArea.HotPotatoGame.domain.model.Player;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @AllArgsConstructor
 public class CreatePlayerUseCaseImpl implements CreatePlayerUseCase {
@@ -15,6 +16,7 @@ public class CreatePlayerUseCaseImpl implements CreatePlayerUseCase {
     private final SavePlayer savePlayer;
     private final CheckPlayerByEmail checkPlayerByEmail;
     private final CheckPlayerByNickname checkPlayerByNickname;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Player execute(Player player) {
@@ -25,6 +27,8 @@ public class CreatePlayerUseCaseImpl implements CreatePlayerUseCase {
         if (this.checkPlayerByNickname.execute(player.getNickname())) {
             throw new NicknameAlreadyUsedException();
         }
+
+        player.setPassword(passwordEncoder.encode(player.getPassword()));
 
         return savePlayer.save(player);
     }

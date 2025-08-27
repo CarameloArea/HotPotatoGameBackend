@@ -1,19 +1,15 @@
 package org.CarameloArea.HotPotatoGame.infrastructure.config;
 
 import org.CarameloArea.HotPotatoGame.application.port.driven.*;
-import org.CarameloArea.HotPotatoGame.application.port.driver.CreatePlayerUseCase;
-import org.CarameloArea.HotPotatoGame.application.port.driver.DeletePlayerUseCase;
-import org.CarameloArea.HotPotatoGame.application.port.driver.FindPlayerUseCase;
-import org.CarameloArea.HotPotatoGame.application.port.driver.UpdatePlayerUseCase;
-import org.CarameloArea.HotPotatoGame.application.usecase.CreatePlayerUseCaseImpl;
-import org.CarameloArea.HotPotatoGame.application.usecase.DeletePlayerUseCaseImpl;
-import org.CarameloArea.HotPotatoGame.application.usecase.FindPlayerUseCaseImpl;
-import org.CarameloArea.HotPotatoGame.application.usecase.UpdatePlayerUseCaseImpl;
+import org.CarameloArea.HotPotatoGame.application.port.driver.*;
+import org.CarameloArea.HotPotatoGame.application.usecase.*;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.PlayerAdapter;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.mapper.PlayerPersistenceMapper;
 import org.CarameloArea.HotPotatoGame.infrastructure.adapter.persistence.repository.PlayerRepository;
+import org.CarameloArea.HotPotatoGame.infrastructure.security.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class BeanConfiguration {
@@ -24,13 +20,18 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public CreatePlayerUseCase createPlayerUseCase(final SavePlayer savePlayer, final CheckPlayerByEmail checkPlayerByEmail, final CheckPlayerByNickname checkPlayerByNickname) {
-        return new CreatePlayerUseCaseImpl(savePlayer, checkPlayerByEmail, checkPlayerByNickname);
+    public CreatePlayerUseCase createPlayerUseCase(final SavePlayer savePlayer, final CheckPlayerByEmail checkPlayerByEmail, final CheckPlayerByNickname checkPlayerByNickname, final PasswordEncoder passwordEncoder) {
+        return new CreatePlayerUseCaseImpl(savePlayer, checkPlayerByEmail, checkPlayerByNickname, passwordEncoder);
     }
 
     @Bean
-    public FindPlayerUseCase findPlayerUseCase(final FindPlayer findPlayer) {
-        return new FindPlayerUseCaseImpl(findPlayer);
+    public FindPlayerUseCase findPlayerUseCase(final FindPlayerById findPlayerById) {
+        return new FindPlayerUseCaseImpl(findPlayerById);
+    }
+
+    @Bean
+    public FindPlayerByEmail findPlayerByEmail(PlayerAdapter playerAdapter) {
+        return playerAdapter::findByEmail;
     }
 
     @Bean
@@ -56,5 +57,10 @@ public class BeanConfiguration {
     @Bean
     public CheckPlayerById checkPlayerById(PlayerAdapter playerAdapter) {
         return playerAdapter::existsById;
+    }
+
+    @Bean
+    public LoginUseCase loginUseCase(final FindPlayerByEmail findPlayerByEmail, final PasswordEncoder passwordEncoder, final JwtService jwtService) {
+        return new LoginUseCaseImpl(findPlayerByEmail, passwordEncoder, jwtService);
     }
 }

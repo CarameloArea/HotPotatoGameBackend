@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static org.CarameloArea.HotPotatoGame.util.EntityUtils.getBaseNameFromEntity;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/players")
@@ -34,7 +36,7 @@ public class PlayerRestAdapter {
 
     @Value("${app.name}")
     private String applicationName;
-    public static final String ENTITY_NAME = PlayerEntity.class.getName();
+    public static final String ENTITY_NAME = getBaseNameFromEntity(PlayerEntity.class.getName());
 
     @GetMapping(value = "/{id}")
     @Operation(summary = "Search for a player by id")

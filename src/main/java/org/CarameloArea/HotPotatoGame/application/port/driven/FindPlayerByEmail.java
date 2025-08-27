@@ -1,8 +1,9 @@
 package org.CarameloArea.HotPotatoGame.application.port.driven;
 
 import org.CarameloArea.HotPotatoGame.domain.model.Player;
+import java.util.Optional;
 
-public interface FindPlayer {
+public interface FindPlayerByEmail {
 
-    Player findById(Integer id);
+    Optional<Player> findByEmail(String email);
 }
