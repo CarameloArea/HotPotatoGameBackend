@@ -65,7 +65,7 @@ public class PlayerRestAdapter {
     @PutMapping(value = "/{id}")
     @Operation(summary = "Update a player")
     public ResponseEntity<UpdatePlayerResponse> updatePlayer(@PathVariable @Valid final Integer id,
-                                                             @RequestBody @Valid final UpdatePlayerRequest updatePlayerRequest) throws URISyntaxException {
+                                                             @RequestBody @Valid final UpdatePlayerRequest updatePlayerRequest) {
         log.debug("REST request to update Player : {}", updatePlayerRequest);
         Player player = this.playerRestMapper.toPlayer(updatePlayerRequest);
         player = this.updatePlayerUseCase.execute(id, player);
@@ -79,7 +79,7 @@ public class PlayerRestAdapter {
 
     @DeleteMapping(value = "/{id}")
     @Operation(summary = "Delete a player")
-    public ResponseEntity<Object> deletePlayer(@PathVariable @Valid final Integer id) throws URISyntaxException {
+    public ResponseEntity<Object> deletePlayer(@PathVariable @Valid final Integer id) {
         this.deletePlayerUseCase.execute(id);
 
         return ResponseEntity.noContent()

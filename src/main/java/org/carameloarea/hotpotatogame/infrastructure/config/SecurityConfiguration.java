@@ -26,7 +26,7 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    public static final String[] UNAUTHENTICATED_ENDPOINTS = {
+    protected static final String[] UNAUTHENTICATED_ENDPOINTS = {
             "/",
             "/swagger",
             "/swagger-ui.html",
@@ -63,8 +63,8 @@ public class SecurityConfiguration {
 
     @Bean
     public AuthenticationProvider authenticationProvider(PlayerRepository playerRepository) {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService(playerRepository));
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(); // NOSONAR
+        authProvider.setUserDetailsService(userDetailsService(playerRepository)); // NOSONAR
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class HotPotatoGameApplicationTests extends AbstractIntegrationTest {
 
+	//Application Test Context Loader
 	@Test
 	void contextLoads() {
 	}

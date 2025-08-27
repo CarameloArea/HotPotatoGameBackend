@@ -25,7 +25,6 @@ public class PlayerAdapter implements SavePlayer, FindPlayerById, UpdatePlayer, 
     @Override
     public Player findById(Integer id) {
         PlayerEntity playerEntity = this.playerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(ENTITY_NAME));
-        ;
         return this.playerPersistenceMapper.toDomain(playerEntity);
     }
 

@@ -181,14 +181,6 @@ class PlayerRestAdapterTest extends AbstractIntegrationTest {
         PlayerEntity playerCreated = this.testFixtureUtil.createPlayerEntity();
         UpdatePlayerRequest updatePlayerRequest = new UpdatePlayerRequest("new PLayer", "newPass123", "RED");
 
-        Player playerUpdated = Player.builder()
-                .id(playerCreated.getId())
-                .nickname(updatePlayerRequest.nickname())
-                .password(updatePlayerRequest.password())
-                .email(playerCreated.getEmail())
-                .icon(updatePlayerRequest.icon())
-                .build();
-
         when(updatePlayerUseCase.execute(any(Integer.class), any(Player.class))).thenThrow(new EntityNotFoundException(ENTITY_NAME));
 
         mockMvc.perform(put(BASE_URL.concat("/123".concat(playerCreated.getId().toString())))
