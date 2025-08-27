@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
+@SuppressWarnings("java:S110")
 public abstract class AlertException extends AbstractThrowableProblem {
 
     private final String entityName;

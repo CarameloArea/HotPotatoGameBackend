@@ -5,6 +5,7 @@ import org.carameloarea.hotpotatogame.infrastructure.adapter.rest.exception.Unau
 
 import static org.carameloarea.hotpotatogame.util.EntityUtils.getBaseNameFromEntity;
 
+@SuppressWarnings("java:S110")
 public class InvalidCredentialsException extends UnauthorizedAlertException {
 
     public static final String ENTITY_NAME = getBaseNameFromEntity(PlayerEntity.class.getName());

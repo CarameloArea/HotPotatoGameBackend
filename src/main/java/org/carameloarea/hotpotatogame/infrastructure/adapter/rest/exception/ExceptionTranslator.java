@@ -1,10 +1,10 @@
 package org.carameloarea.hotpotatogame.infrastructure.adapter.rest.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.carameloarea.hotpotatogame.domain.exception.EmailAlreadyUsedException;
 import org.carameloarea.hotpotatogame.domain.exception.NicknameAlreadyUsedException;
 import org.carameloarea.hotpotatogame.infrastructure.adapter.HeaderUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.ConcurrencyFailureException;
@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * The error response follows RFC7807 - Problem Details for HTTP APIs (https://tools.ietf.org/html/rfc7807).
@@ -124,7 +123,7 @@ public class ExceptionTranslator implements ProblemHandling {
                                 StringUtils.isNotBlank(f.getDefaultMessage()) ? f.getDefaultMessage() : f.getCode()
                         )
                 )
-                .collect(Collectors.toList());
+                .toList();
 
         Problem problem = Problem
                 .builder()
