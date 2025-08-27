@@ -9,6 +9,7 @@ import org.carameloarea.hotpotatogame.infrastructure.adapter.rest.player.dto.Reg
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 @Component
@@ -19,6 +20,8 @@ public class TestFixtureUtil {
 
     @Autowired
     private PlayerPersistenceMapper playerPersistenceMapper;
+
+    private static final Random RANDOM = new SecureRandom();
 
     @Transactional
     public PlayerEntity createPlayerEntity() {
@@ -43,12 +46,11 @@ public class TestFixtureUtil {
     }
 
     public RegisterPlayerRequest createRegisterPlayerRequest(Player player) {
-        int random = new Random().nextInt(10000000);
         return new RegisterPlayerRequest(player.getNickname(), player.getEmail(), this.getRandom());
     }
 
     private String getRandom() {
-        return String.valueOf(new Random().nextInt(10000000));
+        return String.valueOf(RANDOM.nextInt(10000000));
     }
 
 }
