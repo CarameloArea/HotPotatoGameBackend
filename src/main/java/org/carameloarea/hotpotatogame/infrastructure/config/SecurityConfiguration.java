@@ -39,7 +39,8 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                // CSRF protection is disabled because the application is stateless
+                .csrf(csrf -> csrf.disable()) // NOSONAR
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(UNAUTHENTICATED_ENDPOINTS).permitAll()
                         .anyRequest().authenticated()
