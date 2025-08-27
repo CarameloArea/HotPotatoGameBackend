@@ -3,6 +3,8 @@ package org.carameloarea.hotpotatogame.infrastructure.adapter.rest.exception;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.Setter;
 import org.carameloarea.hotpotatogame.domain.exception.EmailAlreadyUsedException;
 import org.carameloarea.hotpotatogame.domain.exception.NicknameAlreadyUsedException;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@SuppressWarnings("unused")
 class ExceptionTranslatorTest {
 
     private MockMvc mockMvc;
@@ -80,17 +83,11 @@ class ExceptionTranslatorTest {
     }
 
     // Simple DTO to use in validation testing.
+    @Setter
+    @Getter
     static class TestDTO {
         @NotEmpty
         private String field;
-
-        public String getField() {
-            return field;
-        }
-
-        public void setField(String field) {
-            this.field = field;
-        }
     }
 
     @BeforeEach
