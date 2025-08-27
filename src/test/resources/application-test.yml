@@ -1,5 +1,0 @@
-application:
-  security:
-    jwt:
-      secret-key: NTFlYjEzNDA5MzY0NDliYjVlMmI2Njg5YjVjN2I5NGRiYjM0N2Y1NjRkM2M3M2ExMTAxNGVlMThmY2Y3MmEzYg==
-      expiration: 3600000
