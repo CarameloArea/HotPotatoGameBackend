@@ -28,6 +28,9 @@ public class SecurityConfiguration {
 
     protected static final String[] UNAUTHENTICATED_ENDPOINTS = {
             "/",
+            "/redoc",
+            "/redoc.html",
+            "/api-docs",
             "/swagger",
             "/swagger-ui.html",
             "/swagger-ui/**",
